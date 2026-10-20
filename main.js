@@ -397,6 +397,16 @@ function initViewportLock() {
   setHeaderHeight();
   window.addEventListener("resize", setHeaderHeight);
 
+  // 모바일 투명 헤더: 스크롤을 시작하면 흰 헤더로 전환
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const updateHeaderSolid = () => {
+    const solid = window.scrollY > 24;
+    if (header) header.classList.toggle("is-solid", solid);
+    if (themeMeta) themeMeta.setAttribute("content", solid ? "#ffffff" : "#2b170c");
+  };
+  updateHeaderSolid();
+  window.addEventListener("scroll", updateHeaderSolid, { passive: true });
+
   // iOS Safari는 user-scalable=no를 무시하므로 핀치 확대를 직접 막음 (더블탭 확대는 CSS touch-action으로 차단)
   ["gesturestart", "gesturechange", "gestureend"].forEach(type => {
     document.addEventListener(type, e => e.preventDefault(), { passive: false });
