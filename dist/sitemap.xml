@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.visitbuyeo.com/</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/hero-01.webp</image:loc>
+      <image:title>부여여행 백마강 풍경</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/hero-04.webp</image:loc>
+      <image:title>해질녘 백마강변 산책 - 부여 가볼만한곳</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/map.webp</image:loc>
+      <image:title>123사비 공예마을지도 - 부여 규암</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/spot-center.webp</image:loc>
+      <image:title>123사비 창작센터 - 부여여행지추천</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/spot-residence.webp</image:loc>
+      <image:title>123사비 레지던스 공예상점</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/spot-coffee202.webp</image:loc>
+      <image:title>규암골목안커피202 - 부여 카페</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/c10.webp</image:loc>
+      <image:title>자개 공예체험 - 부여체험추천</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/c12.webp</image:loc>
+      <image:title>매듭팔찌 체험 - 부여체험추천</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/c11.webp</image:loc>
+      <image:title>123사비공예마을 공예페스타</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/nearby-museum.webp</image:loc>
+      <image:title>국립부여박물관 백제 금동대향로</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/nearby-gungnamji.webp</image:loc>
+      <image:title>궁남지 - 부여 가볼만한곳</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.visitbuyeo.com/img/spot-market.webp</image:loc>
+      <image:title>부여새시장</image:title>
+    </image:image>
+  </url>
+</urlset>

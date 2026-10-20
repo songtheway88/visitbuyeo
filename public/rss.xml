@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>비짓부여 - 부여여행 · 부여 가볼만한곳 추천</title>
+    <link>https://www.visitbuyeo.com/</link>
+    <atom:link href="https://www.visitbuyeo.com/rss.xml" rel="self" type="application/rss+xml" />
+    <description>청년 20명이 직접 다녀온 부여여행 기록. 부여 가볼만한곳, 부여 여행지 추천, 부여 체험 추천과 123사비공예마을 1박 2일 코스를 소개합니다.</description>
+    <language>ko</language>
+    <lastBuildDate>Tue, 20 Oct 2026 12:00:00 +0900</lastBuildDate>
+
+    <item>
+      <title>부여여행 1박 2일 코스 - 청년들이 걸은 그대로</title>
+      <link>https://www.visitbuyeo.com/#course</link>
+      <guid isPermaLink="false">visitbuyeo-course-2026</guid>
+      <description>부여새시장에서 시작해 123사비 창작센터, 청년창고, 규암 옛거리·벽화거리, 백마강 강변, 공예페스타까지. 청년 여행장학생들이 실제로 걸은 부여 1박 2일 여행 코스.</description>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 +0900</pubDate>
+    </item>
+
+    <item>
+      <title>부여 가볼만한곳 - 123사비공예마을 스팟 8곳</title>
+      <link>https://www.visitbuyeo.com/#spots</link>
+      <guid isPermaLink="false">visitbuyeo-spots-2026</guid>
+      <description>부여 여행지 추천. 123사비 창작센터, 레지던스 공예상점, 청년창고, 선화핸즈, 규암면면, 규암골목안커피202, 부여서고, 규암나루터 강변산책길.</description>
+      <pubDate>Tue, 20 Oct 2026 11:50:00 +0900</pubDate>
+    </item>
+
+    <item>
+      <title>부여체험추천 - 자개·매듭팔찌 공예체험과 공예페스타</title>
+      <link>https://www.visitbuyeo.com/#craft-section</link>
+      <guid isPermaLink="false">visitbuyeo-craft-2026</guid>
+      <description>부여 체험 추천. 123사비공예마을에서 즐기는 자개 공예체험, 매듭팔찌 만들기, 작가 부스가 모이는 공예페스타 소개.</description>
+      <pubDate>Tue, 20 Oct 2026 11:40:00 +0900</pubDate>
+    </item>
+
+    <item>
+      <title>함께 가면 좋은 부여 가볼만한곳 - 국립부여박물관·궁남지·부여새시장</title>
+      <link>https://www.visitbuyeo.com/#nearby-grid</link>
+      <guid isPermaLink="false">visitbuyeo-nearby-2026</guid>
+      <description>백제 금동대향로를 만나는 국립부여박물관, 공예마을에서 차로 약 5분 거리의 궁남지, 부여 먹거리 구경을 시작하기 좋은 부여새시장.</description>
+      <pubDate>Tue, 20 Oct 2026 11:30:00 +0900</pubDate>
+    </item>
+
+    <item>
+      <title>청년 20명이 기록한 부여여행 영상 모음</title>
+      <link>https://www.visitbuyeo.com/#scholarship</link>
+      <guid isPermaLink="false">visitbuyeo-videos-2026</guid>
+      <description>COME PLAY INSIGHT 「공예로 머무는 시간」 청년 여행장학 13팀이 만든 부여여행 브이로그와 숏폼. 규암마을 감성 스팟, 공예체험, 백마강 풍경.</description>
+      <pubDate>Tue, 20 Oct 2026 11:20:00 +0900</pubDate>
+    </item>
+
+    <item>
+      <title>123사비공예마을은? - 부여 규암 공예마을 소개</title>
+      <link>https://www.visitbuyeo.com/#village</link>
+      <guid isPermaLink="false">visitbuyeo-village-2026</guid>
+      <description>백마강변 규암나루 옛 마을의 공예마을. 창작센터, 레지던스(공예상점), 아트큐브&amp;전망대, 청년창고와 공방·책방·카페가 모인 부여여행 첫 코스.</description>
+      <pubDate>Tue, 20 Oct 2026 11:10:00 +0900</pubDate>
+    </item>
+  </channel>
+</rss>
