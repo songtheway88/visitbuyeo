@@ -377,7 +377,9 @@ img {
    ========================================================================== */
 .hero-section {
   position: relative;
-  background: linear-gradient(135deg, #2b170c 0%, #733400 50%, #b34f00 100%);
+  background:
+    linear-gradient(135deg, rgba(43, 23, 12, 0.88) 0%, rgba(115, 52, 0, 0.72) 50%, rgba(179, 79, 0, 0.6) 100%),
+    url('/img/t07.webp') center / cover no-repeat;
   color: #ffffff;
   padding: 50px 0 70px;
   overflow: hidden;
@@ -1336,6 +1338,248 @@ img {
   font-size: 14px;
   margin-bottom: 8px;
   color: #444;
+}
+
+.modal-header-img iframe.modal-video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.modal-header-img.is-map {
+  aspect-ratio: auto;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-header-img.is-map img {
+  height: auto;
+  object-fit: contain;
+}
+
+.modal-link {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--color-main);
+}
+
+.modal-link:hover {
+  color: var(--color-main-hover);
+  text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   123사비공예마을 Intro, Video Badge, 1박 2일 Course
+   ========================================================================== */
+.slider-info-left[role="button"] {
+  cursor: pointer;
+}
+
+.team-play-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.village-section {
+  padding: 50px 0 10px;
+}
+
+.village-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  background: var(--color-main-light);
+  border-radius: var(--radius-mob);
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  .village-card {
+    grid-template-columns: 280px 1fr;
+    gap: 36px;
+    padding: 32px;
+    border-radius: var(--radius-tab);
+    align-items: center;
+  }
+}
+
+.village-map {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  max-height: 320px;
+  background: var(--color-gray2);
+}
+
+@media (min-width: 768px) {
+  .village-map {
+    max-height: 380px;
+  }
+}
+
+.village-map img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.village-map-label {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+}
+
+.village-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-main);
+}
+
+.village-text h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 6px 0 12px;
+}
+
+@media (min-width: 768px) {
+  .village-text h2 {
+    font-size: 32px;
+  }
+}
+
+.village-text p {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.7;
+}
+
+.village-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.village-facilities li {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+}
+
+.village-text p.village-note {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-font-sub);
+}
+
+.course-section {
+  padding: 30px 0 60px;
+}
+
+.course-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1290px) {
+  .course-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.course-step {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+@media (min-width: 1290px) {
+  .course-step {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.course-thumb {
+  position: relative;
+  flex: 0 0 120px;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-gray2);
+}
+
+@media (min-width: 1290px) {
+  .course-thumb {
+    flex-basis: auto;
+  }
+}
+
+.course-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-day {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--color-main);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.course-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-main);
+}
+
+.course-text h3 {
+  font-size: 17px;
+  font-weight: 800;
+  margin: 2px 0 4px;
+}
+
+.course-text p {
+  font-size: 14px;
+  color: var(--color-font-sub);
+}
+
+.nearby-header {
+  margin-top: 50px;
 }
 
 

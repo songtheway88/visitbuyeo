@@ -1,9 +1,10 @@
-/* 
+/*
   비짓부여 (VisitBuyeo) - Main Logic File
-  Handles data-efficient SVG rendering, hero slider, modal popups, search filtering & mobile drawer.
+  123사비공예마을(규암) 중심 콘텐츠 허브
+  Handles hero slider, youth video archive, 1박2일 course, craft village spots, modal popups, search filtering & mobile drawer.
 */
 
-// Ultra-lightweight Vector Image Generator (Zero External Image Data Consumption)
+// Ultra-lightweight Vector Image Generator (사진이 없는 카드의 대체 이미지)
 function generateDataUriSvg(title, bgGradient, iconSvg) {
   const svgString = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
@@ -18,463 +19,345 @@ function generateDataUriSvg(title, bgGradient, iconSvg) {
       </defs>
       <rect width="100%" height="100%" fill="url(#${bgGradient.id})" />
       <rect width="100%" height="100%" fill="url(#craft-pattern)" />
-      
+
       <!-- Artistic Overlay Circles -->
       <circle cx="700" cy="80" r="180" fill="#ffffff" opacity="0.06"/>
       <circle cx="100" cy="420" r="140" fill="#ffffff" opacity="0.05"/>
-      
+
       <!-- Center Graphic Icon -->
       <g transform="translate(400, 210) scale(3.5)" fill="#ffffff" opacity="0.9">
         ${iconSvg}
       </g>
-      
+
       <!-- Title Overlay -->
       <rect x="0" y="380" width="800" height="120" fill="rgba(0,0,0,0.35)"/>
       <text x="40" y="445" font-family="'Pretendard GOV', sans-serif" font-size="34" font-weight="800" fill="#ffffff" letter-spacing="-1">
         ${title}
       </text>
       <text x="760" y="445" font-family="'Pretendard GOV', sans-serif" font-size="22" font-weight="600" fill="#ffc999" text-anchor="end">
-        Buyeo Craft &amp; Tour
+        123사비공예마을
       </text>
     </svg>
   `;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
 }
 
-// 20 Travel Scholarship Teams Data (20팀의 여행장학팀이 직접 발로 뛴 여행지 모음)
+const fallbackGradient = { id: "gFallback", c1: "#6a2c00", c2: "#b34f00" };
+const playIcon = `<circle cx="0" cy="0" r="14" fill="none" stroke="#fff" stroke-width="2"/><polygon points="-4,-7 8,0 -4,7" fill="#fff"/>`;
+const pinIcon = `<path d="M0,-14 C8,-14 12,-8 12,-3 C12,5 0,14 0,14 C0,14 -12,5 -12,-3 C-12,-8 -8,-14 0,-14 Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="0" cy="-3" r="4" fill="#fff"/>`;
+
+const platformLabels = {
+  youtube: "유튜브",
+  instagram: "인스타그램",
+  naverclip: "네이버 클립",
+  blog: "네이버 블로그",
+  tiktok: "틱톡"
+};
+
+// 청년 여행장학 영상 아카이브 (COME PLAY INSIGHT 「공예로 머무는 시간」 청년 20명 · 16팀)
+// 미제출 팀(4·6·14팀)은 제출되면 아래 목록에 추가합니다.
 const scholarshipTeamsData = [
   {
     id: 1,
     teamNum: "1팀",
-    category: "craft",
-    title: "[공예컬처] 규암 공예마을과 수제 칠기 공방 탐방",
-    desc: "근대 수공예 거리에서 만난 칠기 장인의 정성. 200년 고택의 멋과 전통 공예 아틀리에 스토리가 펼쳐집니다.",
-    author: "1팀 김부여 외 2명",
-    likes: 248,
-    tags: ["부여가볼만한곳", "백제공예", "규암공예마을"],
-    gradient: { id: "g1", c1: "#6a2c00", c2: "#b34f00" },
-    icon: `<path d="M-12 -12 h24 v24 h-24 z" fill="none" stroke="#fff" stroke-width="2"/><path d="M-8 -8 h16 v16 h-16 z" fill="none" stroke="#ffc999" stroke-width="1.5"/>`,
-    details: "규암 근대 문화거리를 누비며 만난 칠기 공방 장인의 솜씨! 수작업으로 올린 칠기의 깊은 광택과 공공 아틀리에 체험 코스를 1팀이 구석구석 기록했습니다.",
-    courses: [
-      "10:00 - 규암 근대 문화거리 도착 & 고택 카페",
-      "12:00 - 부여 전통 칠기 공방 일일 클래스 (수제 컵/수저 칠하기)",
-      "15:00 - 백제 수공예거리 팝업 전시관 탐방",
-      "17:00 - 백마강 석양 감상 & 규암 찻집"
+    author: "강현준",
+    title: "네이버 클립으로 본 123사비공예마을",
+    desc: "1박 2일 동안 규암 공예마을을 짧은 클립 두 편에 담았습니다.",
+    image: null,
+    tags: ["123사비공예마을", "부여가볼만한곳", "숏폼"],
+    links: [
+      { type: "naverclip", label: "클립 1", url: "https://naver.me/52aNhloS" },
+      { type: "naverclip", label: "클립 2", url: "https://naver.me/5qLfAR9I" }
     ]
   },
   {
     id: 2,
     teamNum: "2팀",
-    category: "attraction",
-    title: "[역사산책] 정림사지 5층석탑 달빛 야간 기행",
-    desc: "유네스코 세계유산 정림사지의 밤 풍경! 탑돌이 행사와 달빛 아래 빛나는 1,400년 백제의 미학.",
-    author: "2팀 박사비 외 1명",
-    likes: 312,
-    tags: ["부여가볼만한곳", "정림사지", "야간기행"],
-    gradient: { id: "g2", c1: "#1b2a4a", c2: "#3b5998" },
-    icon: `<polygon points="0,-18 16,14 -16,14" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "은은한 달빛 아래 우뚝 선 정림사지 5층석탑의 균형미와 석불좌상의 온화한 미소를 담았습니다. 밤에 거닐기 좋은 부여 최고 야경 포인트!",
-    courses: [
-      "18:30 - 정림사지 박물관 사전 도슨트 투어",
-      "19:30 - 5층석탑 야간 점등 & 사진 출사",
-      "20:30 - 정림사지 잔디광장 버스킹 공연"
+    author: "권민기",
+    title: "부여여행 공예체험 vlog",
+    desc: "규암골목안커피202부터 123사비 레지던스, 공예페스타까지 걸어 다닌 기록.",
+    image: "/img/t02.webp",
+    tags: ["123사비공예마을", "부여공예체험", "브이로그"],
+    links: [
+      { type: "youtube", label: "부여여행 공예체험 vlog", url: "https://youtu.be/kxZ0dr3bC20", videoId: "kxZ0dr3bC20" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdaGKPsTthD/" }
     ]
   },
   {
     id: 3,
     teamNum: "3팀",
-    category: "attraction",
-    title: "[연꽃 힐링] 궁남지 서동요 산책 & 백련 차 체험",
-    desc: "우리나라 최초의 인공 정원 궁남지! 포룡정 다리를 건너며 즐기는 연꽃 산책길과 연잎 다도 시음.",
-    author: "3팀 이연꽃 외 3명",
-    likes: 420,
-    tags: ["부여가볼만한곳", "궁남지", "서동공원"],
-    gradient: { id: "g3", c1: "#0a4d3c", c2: "#1bcc9a" },
-    icon: `<circle cx="0" cy="0" r="14" fill="none" stroke="#fff" stroke-width="2"/><circle cx="0" cy="0" r="6" fill="#ffea00"/>`,
-    details: "신라 선화공주와 서동요의 전설이 흐르는 궁남지 포룡정! 3팀이 발로 뛰며 발굴한 베스트 피크닉 존과 시원한 연잎 다도 체험관.",
-    courses: [
-      "09:30 - 궁남지 연꽃 둘레길 걷기 (포룡정)",
-      "11:30 - 궁남지 연잎밥 향토 음식점 점심",
-      "14:00 - 전통 연차 차담 클래스"
-    ]
-  },
-  {
-    id: 4,
-    teamNum: "4팀",
-    category: "attraction",
-    title: "[백제왕도] 사비궁과 백제문화단지 궁중 복식 체헐",
-    desc: "백제 사비시대의 웅장한 궁궐 재현! 능사와 위례성을 둘러보고 백제 왕족 의복을 착용한 화보 출사.",
-    author: "4팀 최백제 외 2명",
-    likes: 289,
-    tags: ["부여가볼만한곳", "백제문화단지", "사비궁"],
-    gradient: { id: "g4", c1: "#5a1818", c2: "#a83232" },
-    icon: `<path d="M-15,10 L0,-15 L15,10 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "사비궁 대전과 능사 5층목탑의 웅장함에 압도된 탐방! 백제 의상을 입고 대궐을 거니는 특별한 추억을 선물합니다.",
-    courses: [
-      "10:00 - 백제문화단지 입구 의상 대여소 (왕족/화랑 복식)",
-      "11:00 - 사비궁 천정전 & 능사 목탑 관람",
-      "14:00 - 백제역사문화관 디지털 전시 체험"
+    author: "김선호",
+    title: "네이버 클립으로 본 규암 공예마을",
+    desc: "공예마을 규암의 하루를 네이버 클립으로 기록했습니다.",
+    image: null,
+    tags: ["123사비공예마을", "규암", "숏폼"],
+    links: [
+      { type: "naverclip", label: "클립", url: "https://naver.me/GGGbUur2" }
     ]
   },
   {
     id: 5,
     teamNum: "5팀",
-    category: "craft",
-    title: "[문학&공예] 신동엽 문학관과 근대 수공예 갤러리",
-    desc: "시인 신동엽의 생가와 문학관 투어. 인근 펠트 & 자수 공방에서 시 구절을 새긴 나만의 공예품 제작.",
-    author: "5팀 정시인 외 1명",
-    likes: 195,
-    tags: ["부여가볼만한곳", "신동엽문학관", "백제공예"],
-    gradient: { id: "g5", c1: "#4a3b2c", c2: "#8c6d4f" },
-    icon: `<rect x="-10" y="-12" width="20" height="24" rx="2" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "'껍데기는 가라'의 신동엽 시인 문학관 뒤편 지붕 곡선의 정취. 공예 장인들과 협업한 문학 공예 소품 숍 탐방기.",
-    courses: [
-      "13:00 - 신동엽 문학관 전시 관람",
-      "14:30 - 문학관 옆 자수 공방 시구절 캘리그라피 모시자수",
-      "16:30 - 규암 근대거리 카페 스탬프 투어"
-    ]
-  },
-  {
-    id: 6,
-    teamNum: "6팀",
-    category: "attraction",
-    title: "[자연&비경] 백마강 황포돛배와 낙화암 강바람 길",
-    desc: "부소산성 등산로를 따라 낙화암 정상까지! 백마강을 유유히 떠다니는 황포돛배 유람선 체험.",
-    author: "6팀 강바람 외 2명",
-    likes: 350,
-    tags: ["부여가볼만한곳", "부소산성", "낙화암"],
-    gradient: { id: "g6", c1: "#004060", c2: "#0080b0" },
-    icon: `<path d="M-15,8 Q0,-12 15,8 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "삼천궁녀의 전설이 깃든 낙화암의 아찔한 절벽 뷰! 삼화정과 고란사 약수터, 황포돛배 선착장까지 완벽한 배산임수 힐링 코스.",
-    courses: [
-      "09:00 - 부소산성 문표소 출발 (숲길 걷기)",
-      "10:30 - 낙화암 수북정 & 고란사 약수 시음",
-      "11:30 - 고란사 선착장 황포돛배 탑승 -> 구드래 나루터"
+    author: "문가빈",
+    title: "부여 여행 — 공예마을 블로그 후기",
+    desc: "자개 공예체험으로 만든 작품과 마을 곳곳의 풍경을 블로그와 릴스로 남겼습니다.",
+    image: "/img/t05.webp",
+    tags: ["부여공예체험", "자개", "블로그"],
+    links: [
+      { type: "blog", label: "부여 여행 (블로그)", url: "https://m.blog.naver.com/mashimarong2455/224422739157" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdgNrxpyLuD/" }
     ]
   },
   {
     id: 7,
     teamNum: "7팀",
-    category: "craft",
-    title: "[도자 공방] 백제 가마터 도자기 흙빚기 물레 클래스",
-    desc: "백제 토기의 부드러운 유선형 코일을 빚다. 손끝으로 전해지는 흙의 질감과 나만의 도자기 완성하기.",
-    author: "7팀 윤도예 외 2명",
-    likes: 275,
-    tags: ["백제공예", "도자기체험", "부여가볼만한곳"],
-    gradient: { id: "g7", c1: "#523725", c2: "#9e6847" },
-    icon: `<ellipse cx="0" cy="0" rx="14" ry="10" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "백제 무늬 토기의 정갈함을 현대적 컵과 그릇으로 재해석! 초보자도 쉽게 배울 수 있는 가마터 도예 클래스 리뷰.",
-    courses: [
-      "14:00 - 부여 도예 공방 가마 구경",
-      "14:30 - 성형 물레 성형 & 백제문양 문양 조각",
-      "16:30 - 2주 후 택배 수령 신청 & 차 한잔"
+    author: "박현준",
+    title: "부여 123사비 공예 마을",
+    desc: "드론과 카메라로 담은 백마강과 규암 마을 풍경 숏폼.",
+    image: "/img/t07.webp",
+    tags: ["123사비공예마을", "백마강", "숏폼"],
+    links: [
+      { type: "youtube", label: "부여 123사비 공예 마을", url: "https://www.youtube.com/shorts/1p0Ck86r510", videoId: "1p0Ck86r510" }
     ]
   },
   {
     id: 8,
     teamNum: "8팀",
-    category: "craft",
-    title: "[금속 세공] 백제 금동대향로 모티브 액세서리 세공",
-    desc: "국보 백제 금동대향로의 화려한 미학! 은 세공 아틀리에에서 만드는 봉황 금속 키링 & 반지.",
-    author: "8팀 한금속 외 1명",
-    likes: 388,
-    tags: ["백제공예", "금동대향로", "부여가볼만한곳"],
-    gradient: { id: "g8", c1: "#7a5c00", c2: "#d4a300" },
-    icon: `<polygon points="0,-16 6,-4 18,-4 8,4 12,16 0,8 -12,16 -8,4 -18,-4 -6,-4" fill="none" stroke="#fff" stroke-width="1.5"/>`,
-    details: "부여 국립부여박물관에서 금동대향로를 실물로 감상한 후, 공방에서 대향로 상단 봉황과 연꽃잎 모티브로 나만의 은반지를 제작했습니다.",
-    courses: [
-      "10:00 - 국립부여박물관 백제관 도슨트 (금동대향로 직관)",
-      "13:30 - 부여 금속 세공 공방 은 땜질 & 광내기 작업",
-      "16:00 - 나만의 각인 완품 완성"
+    author: "배요한 · 김정민",
+    title: "남자 둘이서 가는 부여 여행.. 미친듯(P)",
+    desc: "부여새시장부터 공예마을, 팜파티까지 둘이서 즐긴 1박 2일.",
+    image: "/img/t08.webp",
+    tags: ["부여가볼만한곳", "부여여행", "브이로그"],
+    links: [
+      { type: "youtube", label: "남자 둘이서 가는 부여 여행", url: "https://youtu.be/HmD7Va4FnmY", videoId: "HmD7Va4FnmY" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdRhIL7S2yt/" }
     ]
   },
   {
     id: 9,
     teamNum: "9팀",
-    category: "craft",
-    title: "[목공 아뜰리에] 부여 나무 공방 우드 도마 원데이",
-    desc: "원목 나무 향 가득한 아틀리에. 부여의 느티나무와 밤나무 재목으로 만드는 고급 수제 우드 도마.",
-    author: "9팀 송목공 외 2명",
-    likes: 210,
-    tags: ["백제공예", "목공체험", "부여가볼만한곳"],
-    gradient: { id: "g9", c1: "#2e1f0e", c2: "#6b4720" },
-    icon: `<rect x="-14" y="-10" width="28" height="20" rx="3" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "사포질부터 오일 마감까지 3시간 동안 몰입하는 목공의 매력! 나무 고유의 결을 살려 내 손으로 직접 깎아낸 세상 단 하나의 도마.",
-    courses: [
-      "13:30 - 원목 목재 수종 선택 (밤나무/느티나무)",
-      "14:00 - 직소 샌딩 작업 & 모서리 라운딩",
-      "16:00 - 천연 천연 오일 마감 처리"
+    author: "손별 · 김명호",
+    title: "부여 공예마을 데이트 브이로그",
+    desc: "데이트 브이로그와 공간 필름, 두 가지 시선으로 본 공예마을.",
+    image: "https://i.ytimg.com/vi/FEzDdprYDcA/hqdefault.jpg",
+    tags: ["123사비공예마을", "부여데이트", "브이로그"],
+    links: [
+      { type: "youtube", label: "부여 공예마을 데이트 브이로그", url: "https://youtu.be/FEzDdprYDcA", videoId: "FEzDdprYDcA" },
+      { type: "youtube", label: "부여 공예마을 공간 필름", url: "https://youtu.be/tTfi6l-sT5Q", videoId: "tTfi6l-sT5Q" },
+      { type: "instagram", label: "릴스 1", url: "https://www.instagram.com/reel/DeE-2FvSHz6/" },
+      { type: "instagram", label: "릴스 2", url: "https://www.instagram.com/reel/DeE_KvHyEnA/" }
     ]
   },
   {
     id: 10,
     teamNum: "10팀",
-    category: "stay",
-    title: "[한옥 스테이] 부여 규암 근대 고택 힐링 밤과 전통 다도",
-    desc: "100년 된 부여 적산가옥과 백제식 한옥 숙소. 툇마루에서 들리는 서동공원 바람 소리와 여유.",
-    author: "10팀 조고택 외 2명",
-    likes: 450,
-    tags: ["한옥숙소", "부여가볼만한곳", "힐링여행"],
-    gradient: { id: "g10", c1: "#382923", c2: "#785a4f" },
-    icon: `<path d="M-18,6 L0,-12 L18,6 V16 H-18 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "서까래가 아늑하게 살아있는 부여 근대 고택 숙소에서의 1박! 밤이 되면 한옥 마당에 등불이 켜지며 낭만적인 밤하늘이 펼쳐집니다.",
-    courses: [
-      "15:00 - 한옥 체크인 & 웰컴 백연차 시음",
-      "18:00 - 마당 숯불 부여 로컬 바비큐",
-      "21:00 - 불멍 & 다도 타임"
+    author: "오연우",
+    title: "부여 규암마을 느좋 스팟 추천",
+    desc: "규암마을에서 찾은 감성 스팟과 꼭 가야 할 핫플을 정리했습니다.",
+    image: "https://i.ytimg.com/vi/XqkjVMiMbc8/hqdefault.jpg",
+    tags: ["부여가볼만한곳", "규암", "부여핫플"],
+    links: [
+      { type: "youtube", label: "부여 규암마을 느좋 스팟 추천", url: "https://youtu.be/XqkjVMiMbc8", videoId: "XqkjVMiMbc8" },
+      { type: "youtube", label: "부여 여행 가면 꼭 가야 할 느좋 핫플", url: "https://youtube.com/shorts/3rPYa-Gs4O4", videoId: "3rPYa-Gs4O4" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdwDxBpz7Qy/" }
     ]
   },
   {
     id: 11,
     teamNum: "11팀",
-    category: "food",
-    title: "[로컬 푸드] 부여 연잎밥과 백제 정갈한 삼색 한정식",
-    desc: "향긋한 연잎 향이 찰밥에 베어든 부여 대표 미식! 15가지 찬과 떡갈비 정식 식도락 탐방.",
-    author: "11팀 미식가 외 3명",
-    likes: 512,
-    tags: ["부여맛집", "연잎밥", "부여가볼만한곳"],
-    gradient: { id: "g11", c1: "#432818", c2: "#99582a" },
-    icon: `<circle cx="0" cy="0" r="12" fill="#fff" opacity="0.8"/>`,
-    details: "궁남지 부근 오래된 노포에서 맛본 뜨끈한 연잎 찰밥! 연잎을 걷어낼 때 퍼지는 구수한 향과 쫄깃한 밤, 은행, 대추의 조화.",
-    courses: [
-      "12:00 - 궁남지 연잎밥 정식 전문점 식사",
-      "13:30 - 부여 전통시장 화교 수제 만두 맛집 방문",
-      "15:00 - 백제 밤 라떼 한옥 카페 디저트"
+    author: "오예진",
+    title: "규암 공예마을 투어 가보세요!",
+    desc: "123사비공예마을 투어 코스를 숏폼과 롱폼으로 소개합니다.",
+    image: "https://i.ytimg.com/vi/aKTnAkgxv8U/hqdefault.jpg",
+    tags: ["123사비공예마을", "규암", "2026공예주간"],
+    links: [
+      { type: "youtube", label: "규암 공예마을 투어 가보세요!", url: "https://youtube.com/shorts/vTheXLJn7vs", videoId: "vTheXLJn7vs" },
+      { type: "youtube", label: "123사비공예마을 · 2026공예주간", url: "https://youtu.be/aKTnAkgxv8U", videoId: "aKTnAkgxv8U" }
     ]
   },
   {
     id: 12,
     teamNum: "12팀",
-    category: "craft",
-    title: "[청년 공예가] 부여로 들어온 청년 장인 팝업스토어",
-    desc: "젊은 감각으로 백제 문양을 현대화한 리빙 소품 숍. 컵받침, 도자기 트레이, 현대 인센스 홀더.",
-    author: "12팀 청년장인 외 2명",
-    likes: 310,
-    tags: ["백제공예", "청년공예", "부여가볼만한곳"],
-    gradient: { id: "g12", c1: "#6d597a", c2: "#b5838d" },
-    icon: `<polygon points="0,-12 12,12 -12,12" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "귀촌 청년 공예가들이 만들어가는 규암 공예마을 문화 팝업! 감각적인 인테리어 오브제와 귀여운 백제 캐릭터 굿즈 쇼핑기.",
-    courses: [
-      "11:00 - 청년 공예가 공동 매장 구경",
-      "13:00 - 백제 수막새 문양 컵받침 DIY 체험",
-      "15:00 - 공예마을 시그니처 젤라또 아틀리에"
+    author: "윤금송",
+    title: "심장 부여잡고한 부여 공예체험 🏺",
+    desc: "부여서고, 레지던스 공예상점 등 골목 구석구석과 공예체험 기록.",
+    image: "/img/t12.webp",
+    tags: ["부여공예체험", "부여서고", "브이로그"],
+    links: [
+      { type: "youtube", label: "심장 부여잡고한 부여 공예체험", url: "https://youtu.be/J1pKey3pSg0", videoId: "J1pKey3pSg0" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdNefIGC2Gm/" }
     ]
   },
   {
     id: 13,
     teamNum: "13팀",
-    category: "attraction",
-    title: "[자전거 기행] 백마강 강변길 따라 떠나는 힐링 라이딩",
-    desc: "구드래 조각공원에서 성흥산성 사랑나무까지! 강 바람을 맞으며 만나는 백제의 푸른 풍경.",
-    author: "13팀 라이더 외 1명",
-    likes: 240,
-    tags: ["부여가볼만한곳", "백마강", "자전거길"],
-    gradient: { id: "g13", c1: "#1d3557", c2: "#457b9d" },
-    icon: `<circle cx="-8" cy="6" r="6" stroke="#fff" fill="none" stroke-width="2"/><circle cx="8" cy="6" r="6" stroke="#fff" fill="none" stroke-width="2"/><path d="M-8,6 L0,-6 L8,6" stroke="#fff" fill="none" stroke-width="2"/>`,
-    details: "평탄하게 조성된 백마강 자전거 전용도로를 따라 15km 신나는 라이딩! 억새밭과 강변 공원의 탁 트인 해방감.",
-    courses: [
-      "10:00 - 구드래 조각공원 자전거 대여",
-      "11:30 - 백마강 억새 단지 쉼터 휴식",
-      "13:00 - 성흥산성 아래 시골 국수 맛집"
-    ]
-  },
-  {
-    id: 14,
-    teamNum: "14팀",
-    category: "attraction",
-    title: "[사진 스팟] 성흥산성 가림성 사랑나무 인생샷 포토존",
-    desc: "드라마 촬영지로 유명한 성흥산성 하트 나무! Sunset 타임 붉게 물드는 여울과 나뭇가지의 조화.",
-    author: "14팀 포토그래퍼 외 1명",
-    likes: 620,
-    tags: ["부여가볼만한곳", "성흥산성", "사랑나무"],
-    gradient: { id: "g14", c1: "#d00000", c2: "#ffba08" },
-    icon: `<path d="M0,10 C-10,-5 -15,-15 0,-25 C15,-15 10,-5 0,10 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "부여 여행 가볼만한곳 최다 스크랩 1위! 산성을 따라 15분 올라가면 나타나는 커다란 느티나무 아래에서 하트 모양 반쪽 사진 찍기 꿀팁.",
-    courses: [
-      "16:30 - 성흥산성 주차장 도착 (계단 등산)",
-      "17:15 - 사랑나무 노을 일몰 실루엣 촬영",
-      "18:30 - 하산 후 부여 시내 백제 쌈밥"
+    author: "이연주",
+    title: "공예마을 규암에서 보낸 1박 2일",
+    desc: "백마강, 공방, 공예페스타까지. 1박 2일 전체 동선을 차례대로 담았습니다.",
+    image: "/img/t13.webp",
+    tags: ["123사비공예마을", "부여1박2일", "공예페스타"],
+    links: [
+      { type: "youtube", label: "공예마을 규암에서 보낸 1박 2일", url: "https://youtu.be/1J4OdTNfiKA", videoId: "1J4OdTNfiKA" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/Dds99-ChXXC/" }
     ]
   },
   {
     id: 15,
     teamNum: "15팀",
-    category: "craft",
-    title: "[전통 텍스타일] 부여 한산 모시 & 자연 천연염색 체험",
-    desc: "치자, 쪽, 감풀로 물들이는 천연의 빛깔. 바람에 흩날리는 모시 스카프 천연염색 힐링 아틀리에.",
-    author: "15팀 천연염색 외 2명",
-    likes: 198,
-    tags: ["백제공예", "천연염색", "부여가볼만한곳"],
-    gradient: { id: "g15", c1: "#2b9348", c2: "#55a630" },
-    icon: `<path d="M-15,-10 Q0,15 15,-10 Q0,5 -15,-10 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "손끝에 은은하게 배어드는 쪽빛 자연 염료의 고운 스펙트럼. 내가 고른 천연 재료로 직접 염색한 실크 스카프를 소장할 수 있습니다.",
-    courses: [
-      "10:30 - 천연 재료 (치자/쪽/감) 염료 추출 이해",
-      "11:00 - 스카프 침염 & 홀치기 문양 만들기",
-      "12:30 - 야외 건조 및 다림질 완료"
+    author: "정선희",
+    title: "부여여행끓여옴",
+    desc: "공예상점의 작은 작품들과 마을 풍경을 유튜브와 틱톡으로.",
+    image: "/img/t15.webp",
+    tags: ["부여가볼만한곳", "공예상점", "브이로그"],
+    links: [
+      { type: "youtube", label: "부여여행끓여옴", url: "https://youtu.be/mxsHXe_f1I0", videoId: "mxsHXe_f1I0" },
+      { type: "tiktok", label: "틱톡", url: "https://vt.tiktok.com/ZSbW3tDXE/" }
     ]
   },
   {
     id: 16,
     teamNum: "16팀",
-    category: "attraction",
-    title: "[가족 여행] 서동공원 피크닉 & 어린이나무 공예 교실",
-    desc: "아이들과 함께 떠나는 안전하고 유익한 부여 체험! 서동공원 넓은 잔디밭과 키즈 우드 장난감 만들기.",
-    author: "16팀 패밀리 외 3명",
-    likes: 265,
-    tags: ["부여가볼만한곳", "서동공원", "가족여행"],
-    gradient: { id: "g16", c1: "#e07a5f", c2: "#f2cc8f" },
-    icon: `<circle cx="0" cy="-6" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M-10,12 C-10,0 10,0 10,12" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "유모차도 다니기 편리한 평탄한 서동공원 수변 산책로! 어린이 눈높이에 맞춘 백제 수막새 조각 체험과 키즈 피크닉 타임.",
-    courses: [
-      "10:00 - 서동공원 잔디밭 피크닉 돗자리 세팅",
-      "11:30 - 어린이 공예 교실 (나무 피리 & 백제 캐릭터 조각)",
-      "14:00 - 서동요 전설 애니메이션 관람"
-    ]
-  },
-  {
-    id: 17,
-    teamNum: "17팀",
-    category: "attraction",
-    title: "[나이트 투어] 궁남지 연못 위 환상적인 야경 & 낭만 버스킹",
-    desc: "밤이 되면 변신하는 부여의 정취. 은은한 LED 하트 터널과 포룡정 수상 위 조명 버스킹 음악회.",
-    author: "17팀 나이트 외 2명",
-    likes: 410,
-    tags: ["부여가볼만한곳", "궁남지야경", "부여야경"],
-    gradient: { id: "g17", c1: "#14213d", c2: "#fca311" },
-    icon: `<path d="M0,-15 A12,12 0 1,0 12,0 A14,14 0 0,1 0,-15 Z" fill="#fff"/>`,
-    details: "부여의 밤은 대낮보다 아름답다! 잔잔한 연못 물결에 반사되는 포룡정 목조 다리의 화려한 수중 조명 연출.",
-    courses: [
-      "20:00 - 궁남지 야간 조명 수변 산책",
-      "20:40 - 포룡정 앞 어쿠스틱 낭만 버스킹 감상",
-      "21:30 - 부여 야시장 간식 시식"
-    ]
-  },
-  {
-    id: 18,
-    teamNum: "18팀",
-    category: "food",
-    title: "[감성 카페] 부여 규암 근대거리 아날로그 카페 스탬프 투어",
-    desc: "오래된 양곡 창고와 정미소를 개조한 이색 빈티지 카페들. 백제 밤 라떼와 연잎 스콘 수제 디저트.",
-    author: "18팀 카페투어 외 1명",
-    likes: 335,
-    tags: ["부여카페", "규암근대거리", "부여가볼만한곳"],
-    gradient: { id: "g18", c1: "#6b705c", c2: "#cb997e" },
-    icon: `<path d="M-10,-8 H10 V4 C10,10 -10,10 -10,4 Z" fill="none" stroke="#fff" stroke-width="2"/><path d="M10,-4 H14 C16,-4 16,2 14,2 H10" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "아날로그 레트로 감성이 가득한 규암 카페 거리 4곳 완전 정복! 스탬프를 모두 모으면 수제 공예 티코스터를 드립니다.",
-    courses: [
-      "13:00 - 100년 양곡 창고 카페 (부여 알밤 라떼)",
-      "14:30 - 근대 서점 겸 북카페 쉼터",
-      "16:00 - 공예 갤러리 로스터리 카페 (스탬프 리워드 수령)"
-    ]
-  },
-  {
-    id: 19,
-    teamNum: "19팀",
-    category: "attraction",
-    title: "[문화유산] 무량사 사천왕문과 단풍 자갈길 산책",
-    desc: "만수산 깊은 골짜기에 위치한 천년 고찰 무량사. 김시습 선생이 머물던 조용하고 호젓한 산사 템플스테이.",
-    author: "19팀 산사 산책 외 1명",
-    likes: 290,
-    tags: ["부여가볼만한곳", "무량사", "사찰여행"],
-    gradient: { id: "g19", c1: "#2d6a4f", c2: "#52b788" },
-    icon: `<path d="M-14,8 L0,-12 L14,8 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "보물 무량사 극락전과 5층석탑의 고즈넉함. 계곡물 소리와 사찰 종소리가 어우러져 마음을 깨끗이 비워주는 부여 최고의 템플 투어.",
-    courses: [
-      "10:00 - 무량사 일주문 입장 & 숲길 도보",
-      "11:00 - 무량사 극락전 관람 & 김시습 영당",
-      "12:30 - 산사 앞 산채비빔밥 식사"
-    ]
-  },
-  {
-    id: 20,
-    teamNum: "20팀",
-    category: "attraction",
-    title: "[마스터 코스] 부여 가볼만한곳 3일 완벽 일주 꿀팁",
-    desc: "20개 여행장학팀의 정수를 모은 2박 3일 부여 풀코스! 숙소, 동선, 공예 예약, 필수 맛집 종합 가이드.",
-    author: "20팀 총괄 리더팀",
-    likes: 780,
-    tags: ["부여가볼만한곳", "20팀여행장학", "부여풀코스"],
-    gradient: { id: "g20", c1: "#b34f00", c2: "#e07a5f" },
-    icon: `<polygon points="0,-16 16,14 -16,14" fill="none" stroke="#fff" stroke-width="2"/><circle cx="0" cy="-2" r="4" fill="#ffea00"/>`,
-    details: "부여 여행을 준비하는 모든 분들을 위한 대장정 총정리! 백제 역사유적부터 공예 아틀리에, 밤 야경까지 낭비 없는 2박 3일 황금 동선 지도.",
-    courses: [
-      "1일차 - 정림사지 -> 궁남지 연잎밥 -> 궁남지 야경 -> 한옥 숙박",
-      "2일차 - 부소산성/낙화암 -> 황포돛배 -> 규암 백제공예마을 체험",
-      "3일차 - 백제문화단지 -> 국립부여박물관 -> 성흥산성 사랑나무 노을"
+    author: "정성경 · 박상아",
+    title: "좋은 기회가 있어 부여에 다녀왔습니다",
+    desc: "백제문화단지와 공예마을을 오간 부여 여행 숏폼 두 편.",
+    image: "/img/t16.webp",
+    tags: ["부여가볼만한곳", "백제문화단지", "숏폼"],
+    links: [
+      { type: "youtube", label: "부여에 다녀왔습니다 1", url: "https://youtube.com/shorts/y5nTFc0uWOc", videoId: "y5nTFc0uWOc" },
+      { type: "youtube", label: "부여에 다녀왔습니다 2", url: "https://youtube.com/shorts/p2xGiLI2k_Q", videoId: "p2xGiLI2k_Q" },
+      { type: "instagram", label: "릴스", url: "https://www.instagram.com/reel/DdtKE6Vuqm8/" }
     ]
   }
 ];
 
-// "부여 가볼만한곳 BEST 6" Data
-const bestSpotsData = [
+// 1박 2일 코스 (2026.9.11~12 실제 진행 동선, 13팀 이연주 사진 기준)
+const courseData = [
+  { day: 1, place: "부여새시장", note: "부여 여행의 시작, 시장 입구에서 집결", image: "/img/c01.webp" },
+  { day: 1, place: "123사비 창작센터", note: "오리엔테이션 「공예로 머무는 시간」", image: "/img/c02.webp" },
+  { day: 1, place: "123사비 청년창고", note: "옛 창고를 고친 청년 공간 투어", image: "/img/c03.webp" },
+  { day: 1, place: "규암 옛거리 · 벽화거리", note: "가이드 해설과 함께 걷는 근대 골목", image: "/img/c04.webp" },
+  { day: 1, place: "백마강 강변", note: "강변 산책길에서 듣는 규암나루 이야기", image: "/img/c05.webp" },
+  { day: 1, place: "공방 · 책방 · 소품샵", note: "창고거리의 공방과 작은 책방 구경", image: "/img/c06.webp" },
+  { day: 1, place: "해질녘 백마강변", note: "노을 지는 강변 산책", image: "/img/c07.webp" },
+  { day: 1, place: "팜파티", note: "부여 식재료로 차린 저녁과 네트워킹", image: "/img/c08.webp" },
+  { day: 2, place: "규암면면", note: "마을 식당에서 여는 둘째 날", image: "/img/c09.webp" },
+  { day: 2, place: "자개 공예체험", note: "직접 만드는 자개 소품", image: "/img/c10.webp" },
+  { day: 2, place: "공예페스타", note: "작가 부스에서 공예품 구경", image: "/img/c11.webp" },
+  { day: 2, place: "매듭팔찌 체험", note: "페스타 부스에서 만드는 매듭팔찌", image: "/img/c12.webp" }
+];
+
+// 123사비공예마을 스팟 (운영시간·연락처는 추후 업데이트)
+// category: craft(공방·체험) | food(먹거리) | cafe(카페) | stay(숙소) | walk(산책·볼거리)
+const villageSpotsData = [
   {
     id: 101,
-    rank: 1,
-    name: "궁남지 (서동공원)",
-    category: "역사 정원",
-    address: "충남 부여군 부여읍 동남리 117",
-    summary: "삼국사기에 기록된 우리나라 최초의 인공 포석 정원. 연못 한가운데 백연과 포룡정이 어우러진 최고의 연꽃 명소.",
-    gradient: { id: "s1", c1: "#0a4d3c", c2: "#1bcc9a" },
-    icon: `<circle cx="0" cy="0" r="14" stroke="#fff" fill="none" stroke-width="2"/>`,
-    details: "궁남지는 백제 무왕 때 궁궐 남쪽에 만든 연못으로 서동요 전설의 무대입니다. 봄과 여름엔 연꽃 축제가 열리며, 밤에는 아름다운 수중 조명이 켜집니다."
+    name: "123사비 창작센터",
+    category: "craft",
+    categoryLabel: "공예마을 시설",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "123사비공예마을 여행의 출발점. 청년 여행장학 1박 2일이 이곳에서 시작됐습니다.",
+    image: "/img/spot-center.webp"
   },
   {
     id: 102,
-    rank: 2,
-    name: "정림사지 5층석탑",
-    category: "유네스코 세계유산",
-    address: "충남 부여군 부여읍 정림로 83",
-    summary: "백제 석탑 미학의 결정체! 완벽한 비율과 간결하고 단아한 아름다움을 자랑하는 국보 지정 세계 문화유산.",
-    gradient: { id: "s2", c1: "#1b2a4a", c2: "#3b5998" },
-    icon: `<polygon points="0,-16 14,14 -14,14" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "목조 탑의 양식을 석재로 구현한 백제 탑의 대표작입니다. 밤에는 조명이 정림사지 석탑의 우아함을 한층 돋보이게 합니다."
+    name: "123사비 레지던스 (공예상점)",
+    category: "craft",
+    categoryLabel: "공예마을 시설",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "마을에 머무는 공예가들의 작품을 구경하고 살 수 있는 공예상점.",
+    image: "/img/spot-residence.webp"
   },
   {
     id: 103,
-    rank: 3,
-    name: "백제문화단지",
-    category: "역사 테마파크",
-    address: "충남 부여군 규암면 백제문로 455",
-    summary: "찬란했던 백제 사비시대의 왕궁 사비궁과 5층 목탑 능사를 웅장하게 재현한 100만 평 대규모 백제 문화 단지.",
-    gradient: { id: "s3", c1: "#5a1818", c2: "#a83232" },
-    icon: `<path d="M-15,10 L0,-15 L15,10 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "국내 최초로 백제 왕궁의 구조를 연구하여 고증·복원한 테마파크입니다. 궁중 의복 체험, 활쏘기, 야간 미디어아트 축제가 열립니다."
+    name: "123사비 청년창고",
+    category: "craft",
+    categoryLabel: "공예마을 시설",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "오래된 창고를 고쳐 만든 청년 공간. 1일차 마을 투어 코스.",
+    image: "/img/spot-warehouse.webp"
   },
   {
     id: 104,
-    rank: 4,
-    name: "부여 백제공예문화마을",
-    category: "공예 아틀리에",
-    address: "충남 부여군 규암면 수북로 33",
-    summary: "공예가 머무르는 부여의 심장! 도자기, 칠기, 목공예 장인들이 상주하며 수공예 클래스와 갤러리를 운영하는 마을.",
-    gradient: { id: "s4", c1: "#6a2c00", c2: "#b34f00" },
-    icon: `<rect x="-10" y="-10" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "공예가들의 정성과 멋이 살아있는 근대 수공예 촌입니다. 원데이 아틀리에 클래스를 통해 직접 백제 문양 소품을 만들어볼 수 있습니다."
+    name: "선화핸즈",
+    category: "craft",
+    categoryLabel: "공방·상점",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "규암 옛거리를 걷다 만나는 공간. 1일차 투어에서 들렀습니다.",
+    image: "/img/spot-sunhwa.webp"
   },
   {
     id: 105,
-    rank: 5,
-    name: "부소산성 & 낙화암",
-    category: "역사 산책로",
-    address: "충남 부여군 부여읍 관북리 1-1",
-    summary: "백마강의 절경을 한눈에 바라보는 백제의 마지막 보루. 낙화암과 고란사 약수터, 유유히 뜨는 황포돛배 유람선.",
-    gradient: { id: "s5", c1: "#004060", c2: "#0080b0" },
-    icon: `<path d="M-15,8 Q0,-12 15,8 Z" fill="none" stroke="#fff" stroke-width="2"/>`,
-    details: "부소산 전체가 산성으로 울창한 소나무 숲길을 따라 걸을 수 있습니다. 정상 부근의 낙화암에서 내려다보는 백마강은 탄성을 자아냅니다."
+    name: "규암면면",
+    category: "food",
+    categoryLabel: "먹거리",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "공예마을 지도에 실린 마을 먹거리. 2일차 코스에서 들렀습니다.",
+    image: "/img/spot-myeonmyeon.webp"
   },
   {
     id: 106,
-    rank: 6,
-    name: "신동엽문학관 & 규암 근대거리",
-    category: "문학 & 카페거리",
-    address: "충남 부여군 부여읍 신동엽길 12",
-    summary: "민족시인 신동엽 선생의 숨결과 오래된 정미소, 양곡창고를 개조한 힙한 아날로그 공예 카페 거리.",
-    gradient: { id: "s6", c1: "#4a3b2c", c2: "#8c6d4f" },
-    icon: `<circle cx="0" cy="0" r="10" stroke="#fff" fill="none" stroke-width="2"/>`,
-    details: "승효상 건축가가 설계한 단아한 건물 지붕과 시인의 자필 원고. 근대 골목길 따라 아기자기한 레트로 카페와 팝업 스토어가 조성되어 있습니다."
+    name: "규암골목안커피202",
+    category: "cafe",
+    categoryLabel: "카페",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "골목 안 한옥 지붕 아래 카페. 2팀 권민기의 영상 첫 장면.",
+    image: "/img/spot-coffee202.webp"
+  },
+  {
+    id: 107,
+    name: "부여서고",
+    category: "walk",
+    categoryLabel: "책방",
+    area: "부여군 규암면 · 123사비공예마을",
+    summary: "부여 이야기가 담긴 책과 소품을 만나는 작은 서점.",
+    image: "/img/spot-seogo.webp"
+  },
+  {
+    id: 108,
+    name: "규암나루터 강변산책길",
+    category: "walk",
+    categoryLabel: "산책",
+    area: "부여군 규암면 · 백마강변",
+    summary: "백마강을 따라 걷는 산책길. 청년들이 해질녘에 걸었던 길입니다.",
+    image: "/img/spot-riverside.webp"
   }
 ];
+
+// 함께 가면 좋은 곳 (부여가볼만한곳 · 궁남지 동선 결합)
+const nearbySpotsData = [
+  {
+    id: 201,
+    name: "궁남지",
+    category: "walk",
+    categoryLabel: "부여 대표 명소",
+    area: "부여군 부여읍 동남리 117 · 공예마을에서 차로 약 5분(2.8km)",
+    summary: "우리나라 최초의 인공 연못으로 알려진 백제 정원. 공예마을과 하루 동선으로 묶기 좋습니다.",
+    image: null
+  },
+  {
+    id: 202,
+    name: "백제문화단지",
+    category: "walk",
+    categoryLabel: "역사 테마파크",
+    area: "부여군 규암면 백제문로 455",
+    summary: "공예마을과 같은 규암면에 있는 백제 왕궁 재현 단지. 16팀이 함께 다녀왔습니다.",
+    image: "/img/spot-baekje.webp"
+  },
+  {
+    id: 203,
+    name: "부여새시장",
+    category: "food",
+    categoryLabel: "전통시장",
+    area: "부여군 부여읍",
+    summary: "청년 여행장학 1박 2일의 집결지. 부여 먹거리 구경을 시작하기 좋은 곳.",
+    image: "/img/spot-market.webp"
+  }
+];
+
+const allSpotsData = [...villageSpotsData, ...nearbySpotsData];
+
+// 히어로 슬라이드: 청년 영상 중 1박 2일 흐름이 잘 보이는 4편
+const heroFeaturedIds = [13, 10, 12, 9];
 
 
 // State variables
@@ -487,7 +370,8 @@ let heroAutoTimer = null;
 document.addEventListener("DOMContentLoaded", () => {
   initHeroSlider();
   renderTeamCards();
-  renderBestSpots();
+  renderCourse();
+  renderSpots();
   initMobileDrawer();
   initModalControls();
 });
@@ -500,36 +384,39 @@ function initHeroSlider() {
   const prevBtn = document.getElementById("prev-hero-btn");
   const nextBtn = document.getElementById("next-hero-btn");
   const dots = document.querySelectorAll("#hero-dots .dot");
+  const info = document.getElementById("hero-slide-info");
 
-  if (prevBtn && nextBtn) {
-    prevBtn.addEventListener("click", () => {
-      currentHeroIndex = (currentHeroIndex - 1 + 4) % 4;
-      updateHeroSlide(currentHeroIndex);
-    });
+  if (prevBtn) prevBtn.addEventListener("click", () => {
+    updateHeroSlide((currentHeroIndex - 1 + heroFeaturedIds.length) % heroFeaturedIds.length);
+    startHeroTimer();
+  });
 
-    nextBtn.addEventListener("click", () => {
-      currentHeroIndex = (currentHeroIndex + 1) % 4;
-      updateHeroSlide(currentHeroIndex);
-    });
-  }
+  if (nextBtn) nextBtn.addEventListener("click", () => {
+    updateHeroSlide((currentHeroIndex + 1) % heroFeaturedIds.length);
+    startHeroTimer();
+  });
 
   dots.forEach(dot => {
     dot.addEventListener("click", (e) => {
       const idx = parseInt(e.target.getAttribute("data-index"), 10);
-      currentHeroIndex = idx;
-      updateHeroSlide(currentHeroIndex);
+      updateHeroSlide(idx);
+      startHeroTimer();
     });
   });
 
-  // Start Auto Play Timer
+  if (info) info.addEventListener("click", () => {
+    const team = scholarshipTeamsData.find(t => t.id === heroFeaturedIds[currentHeroIndex]);
+    if (team) openTeamModal(team);
+  });
+
+  updateHeroSlide(0);
   startHeroTimer();
 }
 
 function startHeroTimer() {
   if (heroAutoTimer) clearInterval(heroAutoTimer);
   heroAutoTimer = setInterval(() => {
-    currentHeroIndex = (currentHeroIndex + 1) % 4;
-    updateHeroSlide(currentHeroIndex);
+    updateHeroSlide((currentHeroIndex + 1) % heroFeaturedIds.length);
   }, 5000);
 }
 
@@ -539,33 +426,13 @@ function updateHeroSlide(index) {
   const slideSub = document.getElementById("slide-sub-display");
   const dots = document.querySelectorAll("#hero-dots .dot");
 
-  const heroFeaturedData = [
-    {
-      num: "COURSE 01 / 20",
-      title: "규암 공예마을과 수제 칠기 공방 탐방",
-      sub: "1팀: 근대 수공예 거리와 미학이 숨쉬는 부여 공예 아틀리에"
-    },
-    {
-      num: "COURSE 02 / 20",
-      title: "정림사지 5층석탑 달빛 야간 기행",
-      sub: "2팀: 은은한 달빛 아래 우뚝 선 1,400년 백제 미학의 결정체"
-    },
-    {
-      num: "COURSE 03 / 20",
-      title: "궁남지 서동요 산책 & 백련 차 체험",
-      sub: "3팀: 우리나라 최초의 인공 정원에서 즐기는 다도와 힐링"
-    },
-    {
-      num: "COURSE 04 / 20",
-      title: "사비궁과 백제문화단지 궁중 의복 체험",
-      sub: "4팀: 웅장한 백제 왕궁을 배경으로 펼쳐지는 궁중 화보 출사"
-    }
-  ];
+  currentHeroIndex = index;
+  const team = scholarshipTeamsData.find(t => t.id === heroFeaturedIds[index]);
+  if (!team) return;
 
-  const item = heroFeaturedData[index];
-  if (slideNum) slideNum.textContent = item.num;
-  if (slideTitle) slideTitle.textContent = item.title;
-  if (slideSub) slideSub.textContent = item.sub;
+  if (slideNum) slideNum.textContent = `청년 영상 ${String(index + 1).padStart(2, "0")} / ${String(heroFeaturedIds.length).padStart(2, "0")}`;
+  if (slideTitle) slideTitle.textContent = team.title;
+  if (slideSub) slideSub.textContent = `${team.teamNum} ${team.author} · ${team.desc}`;
 
   dots.forEach((dot, idx) => {
     if (idx === index) {
@@ -578,102 +445,151 @@ function updateHeroSlide(index) {
 
 
 /* ==========================================================================
-   2. Render 20 Travel Scholarship Teams Cards
+   2. Render Youth Travel Scholarship Video Cards
    ========================================================================== */
-function renderTeamCards() {
+function teamImageSrc(team) {
+  return team.image || generateDataUriSvg(team.teamNum, fallbackGradient, playIcon);
+}
+
+function teamCardHtml(team, label) {
+  const platforms = [...new Set(team.links.map(l => platformLabels[l.type]))].join(" · ");
+  return `
+    <div class="team-card-img-wrapper">
+      <img src="${teamImageSrc(team)}" alt="${team.teamNum} ${team.author} - ${team.title}" loading="lazy">
+      <span class="team-badge">${team.teamNum}</span>
+      <span class="team-play-badge">▶ ${team.links.length}</span>
+    </div>
+    <div class="team-card-body">
+      <span class="team-cat">${label}</span>
+      <h3 class="team-title">${team.title}</h3>
+      <p class="team-desc">${team.desc}</p>
+      <div class="team-footer">
+        <span class="team-author">👤 ${team.author}</span>
+        <span>${platforms}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderTeamCards(list = null, emptyMessage = "선택한 키워드의 청년 영상이 없습니다.") {
   const grid = document.getElementById("teams-grid");
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  const filtered = scholarshipTeamsData.filter(team => {
-    const matchCategory = (currentCategoryFilter === "all" || team.category === currentCategoryFilter);
-    const matchTag = (currentTagFilter === "all" || team.tags.includes(currentTagFilter));
-    return matchCategory && matchTag;
+  const filtered = list || scholarshipTeamsData.filter(team => {
+    return currentTagFilter === "all" || team.tags.includes(currentTagFilter);
   });
 
   if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 20px; border: 1px solid var(--color-border);">
-        <p style="font-size: 18px; font-weight: 700; color: var(--color-font-sub);">검색 조건에 해당되는 20팀 코스가 없습니다.</p>
-        <button onclick="resetFilters()" style="margin-top: 15px; background: var(--color-main); color: #fff; padding: 8px 20px; border-radius: 9999px; font-weight: 700;">
-          전체 필터 초기화
-        </button>
-      </div>
-    `;
+    grid.innerHTML = emptyStateHtml(emptyMessage);
     return;
   }
 
   filtered.forEach(team => {
-    const svgSrc = generateDataUriSvg(team.teamNum, team.gradient, team.icon);
-
     const card = document.createElement("div");
     card.className = "team-card";
-    card.onclick = () => openModal(team, "team");
-
-    card.innerHTML = `
-      <div class="team-card-img-wrapper">
-        <img src="${svgSrc}" alt="${team.title}" loading="lazy">
-        <span class="team-badge">${team.teamNum}</span>
-        <button class="team-like-btn" onclick="toggleLike(event, ${team.id})" aria-label="좋아요">
-          ♥
-        </button>
-      </div>
-      <div class="team-card-body">
-        <span class="team-cat">20팀 여행장학 #${team.teamNum}</span>
-        <h3 class="team-title">${team.title}</h3>
-        <p class="team-desc">${team.desc}</p>
-        <div class="team-footer">
-          <span class="team-author">👤 ${team.author}</span>
-          <span id="like-count-${team.id}">❤️ ${team.likes}</span>
-        </div>
-      </div>
-    `;
-
+    card.onclick = () => openTeamModal(team);
+    card.innerHTML = teamCardHtml(team, `청년 여행장학 · ${team.teamNum}`);
     grid.appendChild(card);
   });
 }
 
+function emptyStateHtml(message) {
+  return `
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 20px; border: 1px solid var(--color-border);">
+      <p style="font-size: 18px; font-weight: 700; color: var(--color-font-sub);">${message}</p>
+      <button onclick="resetFilters()" style="margin-top: 15px; background: var(--color-main); color: #fff; padding: 8px 20px; border-radius: 9999px; font-weight: 700;">
+        전체 보기
+      </button>
+    </div>
+  `;
+}
+
 
 /* ==========================================================================
-   3. Render "부여 가볼만한곳 BEST 6" Cards
+   3. Render 1박 2일 Course Timeline
    ========================================================================== */
-function renderBestSpots() {
-  const grid = document.getElementById("spots-grid");
+function renderCourse() {
+  const list = document.getElementById("course-list");
+  if (!list) return;
+
+  list.innerHTML = courseData.map((step, idx) => `
+    <li class="course-step">
+      <div class="course-thumb">
+        <img src="${step.image}" alt="${step.place}" loading="lazy">
+        <span class="course-day">DAY ${step.day}</span>
+      </div>
+      <div class="course-text">
+        <span class="course-num">${String(idx + 1).padStart(2, "0")}</span>
+        <h3>${step.place}</h3>
+        <p>${step.note}</p>
+      </div>
+    </li>
+  `).join("");
+}
+
+
+/* ==========================================================================
+   4. Render Craft Village Spots & Nearby Spots
+   ========================================================================== */
+function spotImageSrc(spot) {
+  return spot.image || generateDataUriSvg("", { id: `gs${spot.id}`, c1: "#0a4d3c", c2: "#1bcc9a" }, pinIcon);
+}
+
+function spotCardHtml(spot, rankLabel) {
+  return `
+    <div class="spot-thumb">
+      <img src="${spotImageSrc(spot)}" alt="${spot.name}" loading="lazy">
+      <span class="spot-rank">${rankLabel}</span>
+    </div>
+    <div class="spot-info">
+      <div class="spot-tag-row">
+        <span class="spot-micro-tag">부여 가볼만한곳</span>
+        <span class="spot-micro-tag">${spot.categoryLabel}</span>
+      </div>
+      <h3 class="spot-name">${spot.name}</h3>
+      <p class="spot-address">📍 ${spot.area}</p>
+      <p class="spot-summary">${spot.summary}</p>
+    </div>
+  `;
+}
+
+function renderSpotGrid(gridId, spots, emptyMessage) {
+  const grid = document.getElementById(gridId);
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  bestSpotsData.forEach(spot => {
-    const svgSrc = generateDataUriSvg(`BEST ${spot.rank}`, spot.gradient, spot.icon);
+  if (spots.length === 0) {
+    grid.innerHTML = emptyStateHtml(emptyMessage);
+    return;
+  }
 
+  spots.forEach((spot, idx) => {
     const card = document.createElement("div");
     card.className = "spot-card";
-    card.onclick = () => openModal(spot, "spot");
-
-    card.innerHTML = `
-      <div class="spot-thumb">
-        <img src="${svgSrc}" alt="${spot.name}" loading="lazy">
-        <span class="spot-rank">${spot.rank}</span>
-      </div>
-      <div class="spot-info">
-        <div class="spot-tag-row">
-          <span class="spot-micro-tag">부여 가볼만한곳</span>
-          <span class="spot-micro-tag">${spot.category}</span>
-        </div>
-        <h3 class="spot-name">${spot.name}</h3>
-        <p class="spot-address">📍 ${spot.address}</p>
-        <p class="spot-summary">${spot.summary}</p>
-      </div>
-    `;
-
+    card.onclick = () => openSpotModal(spot);
+    card.innerHTML = spotCardHtml(spot, idx + 1);
     grid.appendChild(card);
   });
 }
 
+function renderSpots() {
+  const filtered = villageSpotsData.filter(spot => {
+    return currentCategoryFilter === "all" || spot.category === currentCategoryFilter;
+  });
+  const emptyMessage = currentCategoryFilter === "stay"
+    ? "123사비공예마을 숙소 정보는 준비 중입니다."
+    : "해당 분류의 공예마을 스팟은 준비 중입니다.";
+
+  renderSpotGrid("spots-grid", filtered, emptyMessage);
+  renderSpotGrid("nearby-grid", nearbySpotsData, "");
+}
+
 
 /* ==========================================================================
-   4. Search & Tag Filtering Logic
+   5. Search & Tag / Category Filtering Logic
    ========================================================================== */
 window.handleSearch = function() {
   const input = document.getElementById("search-keyword-input");
@@ -685,62 +601,34 @@ window.handleSearch = function() {
     return;
   }
 
-  // Filter 20 teams by search term
   currentTagFilter = "all";
   currentCategoryFilter = "all";
 
-  const grid = document.getElementById("teams-grid");
-  if (!grid) return;
-
-  const filtered = scholarshipTeamsData.filter(team => {
-    return team.title.toLowerCase().includes(val) || 
-           team.desc.toLowerCase().includes(val) || 
+  const teams = scholarshipTeamsData.filter(team => {
+    return team.title.toLowerCase().includes(val) ||
+           team.desc.toLowerCase().includes(val) ||
+           team.author.toLowerCase().includes(val) ||
            team.tags.some(t => t.toLowerCase().includes(val));
   });
-
-  grid.innerHTML = "";
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: #fff; border-radius: 20px; border: 1px solid var(--color-border);">
-        <p style="font-size: 18px; font-weight: 700; color: var(--color-font-sub);">'${val}' 검색어와 일치하는 부여 추천 결과가 없습니다.</p>
-        <button onclick="resetFilters()" style="margin-top: 15px; background: var(--color-main); color: #fff; padding: 8px 20px; border-radius: 9999px; font-weight: 700;">
-          검색어 초기화
-        </button>
-      </div>
-    `;
-    return;
-  }
-
-  filtered.forEach(team => {
-    const svgSrc = generateDataUriSvg(team.teamNum, team.gradient, team.icon);
-    const card = document.createElement("div");
-    card.className = "team-card";
-    card.onclick = () => openModal(team, "team");
-    card.innerHTML = `
-      <div class="team-card-img-wrapper">
-        <img src="${svgSrc}" alt="${team.title}">
-        <span class="team-badge">${team.teamNum}</span>
-      </div>
-      <div class="team-card-body">
-        <span class="team-cat">검색 결과 #${team.teamNum}</span>
-        <h3 class="team-title">${team.title}</h3>
-        <p class="team-desc">${team.desc}</p>
-        <div class="team-footer">
-          <span class="team-author">👤 ${team.author}</span>
-          <span>❤️ ${team.likes}</span>
-        </div>
-      </div>
-    `;
-    grid.appendChild(card);
+  const spots = allSpotsData.filter(spot => {
+    return spot.name.toLowerCase().includes(val) ||
+           spot.summary.toLowerCase().includes(val) ||
+           spot.area.toLowerCase().includes(val);
   });
+
+  renderTeamCards(teams, `'${val}' 검색어와 일치하는 청년 영상이 없습니다.`);
+  renderSpotGrid("spots-grid", spots, `'${val}' 검색어와 일치하는 스팟이 없습니다.`);
+
+  const target = teams.length === 0 && spots.length > 0 ? "spots" : "scholarship";
+  const section = document.getElementById(target);
+  if (section) section.scrollIntoView({ behavior: "smooth" });
 };
 
 window.filterByTag = function(tag) {
   currentTagFilter = tag;
   const pills = document.querySelectorAll(".keywords-box .tag-pill");
   pills.forEach(p => p.classList.remove("active"));
-  
+
   event.target.classList.add("active");
   renderTeamCards();
 
@@ -750,17 +638,25 @@ window.filterByTag = function(tag) {
 };
 
 window.filterCategory = function(cat) {
-  currentCategoryFilter = cat;
   const catItems = document.querySelectorAll(".category-grid .cat-item");
   catItems.forEach(item => item.classList.remove("active"));
-  
+
   if (event && event.currentTarget) {
     event.currentTarget.classList.add("active");
   }
 
-  renderTeamCards();
+  if (cat === "video") {
+    currentTagFilter = "all";
+    renderTeamCards();
+    const section = document.getElementById("scholarship");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
 
-  const section = document.getElementById("scholarship");
+  currentCategoryFilter = cat;
+  renderSpots();
+
+  const section = document.getElementById("spots");
   if (section) section.scrollIntoView({ behavior: "smooth" });
 };
 
@@ -784,29 +680,7 @@ window.resetFilters = function() {
   });
 
   renderTeamCards();
-};
-
-
-/* ==========================================================================
-   5. Interactive Like Button
-   ========================================================================== */
-window.toggleLike = function(e, id) {
-  e.stopPropagation(); // prevent opening modal
-  const team = scholarshipTeamsData.find(t => t.id === id);
-  if (!team) return;
-
-  const btn = e.currentTarget;
-  const countSpan = document.getElementById(`like-count-${id}`);
-
-  if (btn.classList.contains("liked")) {
-    btn.classList.remove("liked");
-    team.likes--;
-  } else {
-    btn.classList.add("liked");
-    team.likes++;
-  }
-
-  if (countSpan) countSpan.textContent = `❤️ ${team.likes}`;
+  renderSpots();
 };
 
 
@@ -818,19 +692,24 @@ function initModalControls() {
   const closeBtn = document.getElementById("modal-close-btn");
 
   if (closeBtn && modal) {
-    closeBtn.addEventListener("click", () => {
-      modal.classList.remove("open");
-    });
+    closeBtn.addEventListener("click", closeModal);
 
     modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.classList.remove("open");
-      }
+      if (e.target === modal) closeModal();
     });
   }
 }
 
-function openModal(data, type) {
+function closeModal() {
+  const modal = document.getElementById("detail-modal");
+  const imgBox = document.getElementById("modal-img-container");
+  if (!modal) return;
+  modal.classList.remove("open");
+  // 재생 중인 영상 정지
+  if (imgBox) imgBox.innerHTML = "";
+}
+
+function openTeamModal(team) {
   const modal = document.getElementById("detail-modal");
   const imgBox = document.getElementById("modal-img-container");
   const badge = document.getElementById("modal-badge");
@@ -838,56 +717,67 @@ function openModal(data, type) {
   const meta = document.getElementById("modal-meta");
   const desc = document.getElementById("modal-desc");
   const courseBox = document.getElementById("modal-course-box");
+  const courseTitle = document.getElementById("modal-course-title");
   const courseOl = document.getElementById("modal-course-ol");
 
   if (!modal) return;
 
-  const svgSrc = generateDataUriSvg(type === "team" ? data.teamNum : `BEST ${data.rank}`, data.gradient, data.icon);
-  imgBox.innerHTML = `<img src="${svgSrc}" alt="${data.title || data.name}">`;
-
-  if (type === "team") {
-    badge.textContent = `20팀 여행장학 #${data.teamNum}`;
-    title.textContent = data.title;
-    meta.innerHTML = `
-      <span>👤 작성팀: ${data.author}</span>
-      <span>❤️ 좋아요: ${data.likes}개</span>
-      <span>🏷️ 태그: #${data.tags.join(" #")}</span>
-    `;
-    desc.textContent = data.details || data.desc;
-
-    if (data.courses && data.courses.length > 0) {
-      courseBox.style.display = "block";
-      courseOl.innerHTML = data.courses.map(c => `<li>${c}</li>`).join("");
-    } else {
-      courseBox.style.display = "none";
-    }
+  imgBox.classList.remove("is-map");
+  const firstVideo = team.links.find(l => l.videoId);
+  if (firstVideo) {
+    imgBox.innerHTML = `<iframe class="modal-video" src="https://www.youtube-nocookie.com/embed/${firstVideo.videoId}" title="${firstVideo.label}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
   } else {
-    badge.textContent = `부여 가볼만한곳 RANK ${data.rank}`;
-    title.textContent = data.name;
-    meta.innerHTML = `
-      <span>📍 위치: ${data.address}</span>
-      <span>🏛️ 카테고리: ${data.category}</span>
-    `;
-    desc.textContent = data.details || data.summary;
-    courseBox.style.display = "none";
+    imgBox.innerHTML = `<img src="${teamImageSrc(team)}" alt="${team.title}">`;
   }
+
+  badge.textContent = `청년 여행장학 · ${team.teamNum}`;
+  title.textContent = team.title;
+  meta.innerHTML = `
+    <span>👤 ${team.author}</span>
+    <span>🏷️ #${team.tags.join(" #")}</span>
+  `;
+  desc.textContent = team.desc;
+
+  courseBox.style.display = "block";
+  courseTitle.textContent = "콘텐츠 보러가기";
+  courseOl.innerHTML = team.links.map(l => `
+    <li><a class="modal-link" href="${l.url}" target="_blank" rel="noopener">${platformLabels[l.type]} · ${l.label} ↗</a></li>
+  `).join("");
 
   modal.classList.add("open");
 }
 
-window.openCraftModal = function() {
-  const craftSample = {
-    teamNum: "공예 아틀리에",
-    rank: 1,
-    gradient: { id: "gCraft", c1: "#6a2c00", c2: "#b34f00" },
-    icon: `<rect x="-10" y="-10" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"/>`,
-    name: "부여 규암 백제공예마을 아틀리에 체험 예약",
-    address: "충남 부여군 규암면 수북로 33",
-    category: "공예 체험 클래스",
-    summary: "도자기, 목공예, 칠기, 금속세공 장인들과 1:1로 배우는 수공예 원데이 클래스 예약 안내.",
-    details: "부여 백제공예문화마을은 전통과 현대의 공예가 공존하는 한국 최고 수준의 수공예 체험지입니다. 사전 예약을 통해 나만의 칠기, 은장신구, 원목 도자기 작품을 완성해보세요. (예약 문의: 010-4487-4468 / viralers@naver.com)"
-  };
-  openModal(craftSample, "spot");
+function openSpotModal(spot) {
+  const modal = document.getElementById("detail-modal");
+  const imgBox = document.getElementById("modal-img-container");
+  const badge = document.getElementById("modal-badge");
+  const title = document.getElementById("modal-title");
+  const meta = document.getElementById("modal-meta");
+  const desc = document.getElementById("modal-desc");
+  const courseBox = document.getElementById("modal-course-box");
+
+  if (!modal) return;
+
+  imgBox.innerHTML = `<img src="${spotImageSrc(spot)}" alt="${spot.name}">`;
+  imgBox.classList.toggle("is-map", Boolean(spot.isMap));
+  badge.textContent = spot.categoryLabel;
+  title.textContent = spot.name;
+  meta.innerHTML = `<span>📍 ${spot.area}</span>`;
+  desc.textContent = spot.isMap ? spot.summary : `${spot.summary} 운영시간과 연락처는 곧 업데이트됩니다.`;
+  courseBox.style.display = "none";
+
+  modal.classList.add("open");
+}
+
+window.openMapModal = function() {
+  openSpotModal({
+    name: "123사비 공예마을지도",
+    categoryLabel: "공예마을 지도",
+    area: "충남 부여군 규암면 규암리 일대",
+    summary: "창작센터·레지던스(공예상점)·아트큐브&전망대·청년창고 4개 시설과 공방, 먹을거리, 마실거리, 즐길거리, 숙박이 한 장에 담긴 마을 지도입니다. 현장 안내판을 촬영한 사진입니다.",
+    image: "/img/map.webp",
+    isMap: true
+  });
 };
 
 
