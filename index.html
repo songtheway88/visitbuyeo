@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2b170c">
 
   <!-- SEO Best Practices Optimization -->
   <title>부여 가볼만한곳 | 123사비공예마을 규암 - 비짓부여</title>
@@ -116,6 +117,14 @@
        Hero Banner Section
        ========================================== -->
   <section class="hero-section" id="hero">
+    <!-- 백마강 배경 디졸브 (한낮 → 강변 → 산책길 → 해질녘) -->
+    <div class="hero-bg" aria-hidden="true">
+      <span class="hero-slide" style="background-image: url('/img/hero-01.webp')"></span>
+      <span class="hero-slide" style="background-image: url('/img/hero-02.webp')"></span>
+      <span class="hero-slide" style="background-image: url('/img/hero-03.webp')"></span>
+      <span class="hero-slide" style="background-image: url('/img/hero-04.webp')"></span>
+    </div>
+
     <div class="container">
       <div class="hero-content">
         <div class="hero-tag">
@@ -123,8 +132,8 @@
           KOREA CRAFT WEEK 2026 · 123사비공예마을
         </div>
 
-        <h1 class="hero-title">공예가 머무르는 여행지 부여</h1>
-        <p class="hero-subtitle">청년 20명이 123사비공예마을에서 보낸 1박 2일</p>
+        <h1 class="hero-title"><span class="phrase">공예가 머무르는</span> <span class="phrase">여행지 부여</span></h1>
+        <p class="hero-subtitle"><span class="phrase">청년 20명이</span> <span class="phrase">123사비공예마을에서 보낸</span> <span class="phrase">1박 2일</span></p>
 
         <!-- Hero Carousel Slide Controls -->
         <div class="hero-slider-box">
@@ -147,6 +156,11 @@
         </div>
       </div>
     </div>
+
+    <a href="#village" class="hero-scroll-cue" aria-label="아래로 스크롤">
+      <span>SCROLL</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
   </section>
 
   <!-- ==========================================
@@ -157,7 +171,7 @@
       <div class="search-card">
         <form id="search-form" onsubmit="event.preventDefault(); handleSearch();">
           <div class="search-input-box">
-            <input type="text" id="search-keyword-input" placeholder="123사비공예마을, 공예체험, 백마강을 검색해 보세요." aria-label="부여 여행 검색어 입력">
+            <input type="search" id="search-keyword-input" placeholder="123사비공예마을, 공예체험, 백마강을 검색해 보세요." aria-label="부여 여행 검색어 입력">
             <button type="submit" class="search-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               검색
@@ -221,7 +235,7 @@
           </button>
           <div class="village-text">
             <span class="village-eyebrow">부여군 규암면 · 백마강변</span>
-            <h2>123사비공예마을은?</h2>
+            <h2><span class="phrase">123사비공예마을은?</span></h2>
             <p>백마강변 규암나루 옛 마을에 자리한 공예마을입니다. 오래된 상점과 창고 사이로 공방, 책방, 카페가 골목마다 이어지고, 해질녘엔 강변 산책길이 기다립니다.</p>
             <ul class="village-facilities">
               <li>창작센터</li>
@@ -242,16 +256,21 @@
       <div class="container">
         <div class="section-header">
           <div class="title-group">
-            <h2>청년 20명이 기록한 123사비공예마을</h2>
+            <h2><span class="phrase">청년 20명이 기록한</span> <span class="phrase">123사비공예마을</span></h2>
             <p>COME PLAY INSIGHT 「공예로 머무는 시간」 2026.9.11~12 · 청년 여행장학 팀별 영상</p>
           </div>
-          <a href="javascript:void(0)" onclick="resetFilters()" class="view-more-link">
-            전체 영상 보기 &rarr;
-          </a>
         </div>
 
-        <div class="team-cards-grid" id="teams-grid">
-          <!-- Injected dynamically via JS -->
+        <!-- 좌우로 넘기는 영상 카드 (책장 넘기기) -->
+        <div class="team-carousel">
+          <div class="team-cards-grid" id="teams-grid">
+            <!-- Injected dynamically via JS -->
+          </div>
+          <div class="carousel-nav">
+            <button class="carousel-btn" id="teams-prev" aria-label="이전 영상">&#10094;</button>
+            <span class="carousel-counter" id="teams-counter">1 / 13</span>
+            <button class="carousel-btn" id="teams-next" aria-label="다음 영상">&#10095;</button>
+          </div>
         </div>
       </div>
     </section>
@@ -263,7 +282,7 @@
       <div class="container">
         <div class="section-header">
           <div class="title-group">
-            <h2>부여 1박 2일 코스, 청년들이 걸은 그대로</h2>
+            <h2><span class="phrase">부여 1박 2일 코스,</span> <span class="phrase">청년들이 걸은 그대로</span></h2>
             <p>부여새시장에서 시작해 공예마을 골목과 백마강, 공예페스타까지 이어지는 실제 동선</p>
           </div>
         </div>
@@ -292,7 +311,7 @@
 
         <div class="section-header nearby-header">
           <div class="title-group">
-            <h2>함께 가면 좋은 부여 가볼만한곳</h2>
+            <h2><span class="phrase">함께 가면 좋은</span> <span class="phrase">부여 가볼만한곳</span></h2>
             <p>공예마을과 하루 동선으로 묶기 좋은 곳</p>
           </div>
         </div>
@@ -310,7 +329,7 @@
       <div class="container">
         <div class="craft-banner-card">
           <div class="craft-banner-text">
-            <h3>123사비공예마을에서 공예를 만나는 법</h3>
+            <h3><span class="phrase">123사비공예마을에서</span> <span class="phrase">공예를 만나는 법</span></h3>
             <p>자개·매듭팔찌 같은 공예체험부터 작가 부스가 모이는 공예페스타까지. 정기 공예장터와 공방 클래스 일정도 이곳에서 계속 소개할게요.</p>
           </div>
           <a href="javascript:void(0)" onclick="openMapModal()" class="craft-banner-btn">

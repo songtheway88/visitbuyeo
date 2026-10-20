@@ -47,6 +47,7 @@ const playIcon = `<circle cx="0" cy="0" r="14" fill="none" stroke="#fff" stroke-
 const pinIcon = `<path d="M0,-14 C8,-14 12,-8 12,-3 C12,5 0,14 0,14 C0,14 -12,5 -12,-3 C-12,-8 -8,-14 0,-14 Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="0" cy="-3" r="4" fill="#fff"/>`;
 
 const platformLabels = {
+  video: "영상",
   youtube: "유튜브",
   instagram: "인스타그램",
   naverclip: "네이버 클립",
@@ -61,11 +62,13 @@ const scholarshipTeamsData = [
     id: 1,
     teamNum: "1팀",
     author: "강현준",
-    title: "네이버 클립으로 본 123사비공예마을",
-    desc: "1박 2일 동안 규암 공예마을을 짧은 클립 두 편에 담았습니다.",
-    image: null,
+    title: "부여 2026, 공예로 머무는 시간",
+    desc: "1박 2일 동안 규암 공예마을을 영상 두 편에 담아 네이버 클립에 올렸습니다.",
+    image: "/video/t01-a.webp",
     tags: ["123사비공예마을", "부여가볼만한곳", "숏폼"],
     links: [
+      { type: "video", label: "부여 2026 (43초)", url: "/video/t01-a.mp4", poster: "/video/t01-a.webp" },
+      { type: "video", label: "공예마을 1박 2일 (4분 45초)", url: "/video/t01-b.mp4", poster: "/video/t01-b.webp" },
       { type: "naverclip", label: "클립 1", url: "https://naver.me/52aNhloS" },
       { type: "naverclip", label: "클립 2", url: "https://naver.me/5qLfAR9I" }
     ]
@@ -87,11 +90,12 @@ const scholarshipTeamsData = [
     id: 3,
     teamNum: "3팀",
     author: "김선호",
-    title: "네이버 클립으로 본 규암 공예마을",
-    desc: "공예마을 규암의 하루를 네이버 클립으로 기록했습니다.",
-    image: null,
+    title: "오늘, 여기서 만나보세요",
+    desc: "공예마을 규암의 하루를 30초 영상으로 기록해 네이버 클립에 올렸습니다.",
+    image: "/video/t03.webp",
     tags: ["123사비공예마을", "규암", "숏폼"],
     links: [
+      { type: "video", label: "공예마을 규암 (30초)", url: "/video/t03.mp4", poster: "/video/t03.webp" },
       { type: "naverclip", label: "클립", url: "https://naver.me/GGGbUur2" }
     ]
   },
@@ -327,21 +331,24 @@ const villageSpotsData = [
 const nearbySpotsData = [
   {
     id: 201,
+    name: "국립부여박물관",
+    category: "walk",
+    categoryLabel: "박물관",
+    area: "부여군 부여읍 금성로 5",
+    summary: "국보 백제 금동대향로를 직접 볼 수 있는 곳. 공예마을에서 만난 백제 공예의 뿌리를 따라가 보세요.",
+    image: "/img/nearby-museum.webp",
+    imagePosition: "center 12%",
+    credit: "사진: 백제 금동대향로 · 국립중앙박물관 (공공누리 제1유형)"
+  },
+  {
+    id: 202,
     name: "궁남지",
     category: "walk",
     categoryLabel: "부여 대표 명소",
     area: "부여군 부여읍 동남리 117 · 공예마을에서 차로 약 5분(2.8km)",
     summary: "우리나라 최초의 인공 연못으로 알려진 백제 정원. 공예마을과 하루 동선으로 묶기 좋습니다.",
-    image: null
-  },
-  {
-    id: 202,
-    name: "백제문화단지",
-    category: "walk",
-    categoryLabel: "역사 테마파크",
-    area: "부여군 규암면 백제문로 455",
-    summary: "공예마을과 같은 규암면에 있는 백제 왕궁 재현 단지. 16팀이 함께 다녀왔습니다.",
-    image: "/img/spot-baekje.webp"
+    image: "/img/nearby-gungnamji.webp",
+    credit: "사진: travel oriented · CC BY-SA 2.0 (Wikimedia Commons)"
   },
   {
     id: 203,
@@ -368,13 +375,36 @@ let heroAutoTimer = null;
 
 // DOM Content Loaded Handler
 document.addEventListener("DOMContentLoaded", () => {
+  initViewportLock();
   initHeroSlider();
   renderTeamCards();
+  initTeamCarousel();
   renderCourse();
   renderSpots();
   initMobileDrawer();
   initModalControls();
 });
+
+
+/* ==========================================================================
+   0. Mobile Viewport Lock (모바일 전용 페이지처럼 확대·좌우 쏠림 방지)
+   ========================================================================== */
+function initViewportLock() {
+  const header = document.getElementById("main-header");
+  const setHeaderHeight = () => {
+    if (header) document.documentElement.style.setProperty("--header-h", `${header.offsetHeight}px`);
+  };
+  setHeaderHeight();
+  window.addEventListener("resize", setHeaderHeight);
+
+  // iOS Safari는 user-scalable=no를 무시하므로 핀치 확대를 직접 막음 (더블탭 확대는 CSS touch-action으로 차단)
+  ["gesturestart", "gesturechange", "gestureend"].forEach(type => {
+    document.addEventListener(type, e => e.preventDefault(), { passive: false });
+  });
+  document.addEventListener("touchmove", e => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+}
 
 
 /* ==========================================================================
@@ -493,6 +523,63 @@ function renderTeamCards(list = null, emptyMessage = "선택한 키워드의 청
     card.innerHTML = teamCardHtml(team, `청년 여행장학 · ${team.teamNum}`);
     grid.appendChild(card);
   });
+
+  grid.scrollTo({ left: 0 });
+  updateTeamCounter();
+}
+
+// 좌우로 한 장씩 넘기는 카드 (scroll-snap + 버튼)
+function initTeamCarousel() {
+  const grid = document.getElementById("teams-grid");
+  const prevBtn = document.getElementById("teams-prev");
+  const nextBtn = document.getElementById("teams-next");
+  if (!grid) return;
+
+  const step = (dir) => {
+    const card = grid.querySelector(".team-card");
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+    grid.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: "smooth" });
+  };
+
+  if (prevBtn) prevBtn.addEventListener("click", () => step(-1));
+  if (nextBtn) nextBtn.addEventListener("click", () => step(1));
+
+  let ticking = false;
+  grid.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      updateTeamCounter();
+      ticking = false;
+    });
+  });
+  window.addEventListener("resize", updateTeamCounter);
+}
+
+function updateTeamCounter() {
+  const grid = document.getElementById("teams-grid");
+  const counter = document.getElementById("teams-counter");
+  const prevBtn = document.getElementById("teams-prev");
+  const nextBtn = document.getElementById("teams-next");
+  if (!grid || !counter) return;
+
+  const cards = grid.querySelectorAll(".team-card");
+  if (cards.length === 0) {
+    counter.textContent = "0 / 0";
+    return;
+  }
+
+  const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+  const cardSpan = cards[0].offsetWidth + gap;
+  const perView = Math.max(1, Math.round((grid.clientWidth + gap) / cardSpan));
+  const first = Math.round(grid.scrollLeft / cardSpan);
+  const last = Math.min(cards.length, first + perView);
+  const atEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 2;
+
+  counter.textContent = perView > 1 ? `${first + 1}–${atEnd ? cards.length : last} / ${cards.length}` : `${Math.min(first + 1, cards.length)} / ${cards.length}`;
+  if (prevBtn) prevBtn.disabled = grid.scrollLeft <= 2;
+  if (nextBtn) nextBtn.disabled = atEnd;
 }
 
 function emptyStateHtml(message) {
@@ -540,7 +627,7 @@ function spotImageSrc(spot) {
 function spotCardHtml(spot, rankLabel) {
   return `
     <div class="spot-thumb">
-      <img src="${spotImageSrc(spot)}" alt="${spot.name}" loading="lazy">
+      <img src="${spotImageSrc(spot)}" alt="${spot.name}" loading="lazy"${spot.imagePosition ? ` style="object-position: ${spot.imagePosition}"` : ""}>
       <span class="spot-rank">${rankLabel}</span>
     </div>
     <div class="spot-info">
@@ -551,6 +638,7 @@ function spotCardHtml(spot, rankLabel) {
       <h3 class="spot-name">${spot.name}</h3>
       <p class="spot-address">📍 ${spot.area}</p>
       <p class="spot-summary">${spot.summary}</p>
+      ${spot.credit ? `<p class="spot-credit">${spot.credit}</p>` : ""}
     </div>
   `;
 }
@@ -723,9 +811,9 @@ function openTeamModal(team) {
   if (!modal) return;
 
   imgBox.classList.remove("is-map");
-  const firstVideo = team.links.find(l => l.videoId);
-  if (firstVideo) {
-    imgBox.innerHTML = `<iframe class="modal-video" src="https://www.youtube-nocookie.com/embed/${firstVideo.videoId}" title="${firstVideo.label}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+  const playable = team.links.filter(isPlayable);
+  if (playable.length > 0) {
+    showPlayer(playable[0]);
   } else {
     imgBox.innerHTML = `<img src="${teamImageSrc(team)}" alt="${team.title}">`;
   }
@@ -740,11 +828,34 @@ function openTeamModal(team) {
 
   courseBox.style.display = "block";
   courseTitle.textContent = "콘텐츠 보러가기";
-  courseOl.innerHTML = team.links.map(l => `
-    <li><a class="modal-link" href="${l.url}" target="_blank" rel="noopener">${platformLabels[l.type]} · ${l.label} ↗</a></li>
-  `).join("");
+  courseOl.innerHTML = team.links.map((l, idx) => isPlayable(l)
+    ? `<li><button class="modal-link modal-play" data-link="${idx}">▶ ${platformLabels[l.type]} · ${l.label}</button></li>`
+    : `<li><a class="modal-link" href="${l.url}" target="_blank" rel="noopener">${platformLabels[l.type]} · ${l.label} ↗</a></li>`
+  ).join("");
+  courseOl.querySelectorAll(".modal-play").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showPlayer(team.links[Number(btn.dataset.link)], true);
+      modal.querySelector(".modal-card").scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
 
   modal.classList.add("open");
+}
+
+function isPlayable(link) {
+  return Boolean(link.videoId) || link.type === "video";
+}
+
+// 모달 상단 플레이어: 유튜브는 iframe, 사이트 영상(네이버 클립 원본)은 video 태그
+function showPlayer(link, autoplay = false) {
+  const imgBox = document.getElementById("modal-img-container");
+  if (!imgBox) return;
+
+  if (link.videoId) {
+    imgBox.innerHTML = `<iframe class="modal-video" src="https://www.youtube-nocookie.com/embed/${link.videoId}${autoplay ? "?autoplay=1" : ""}" title="${link.label}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  } else {
+    imgBox.innerHTML = `<video class="modal-video" src="${link.url}" poster="${link.poster || ""}" controls playsinline preload="metadata"${autoplay ? " autoplay" : ""}></video>`;
+  }
 }
 
 function openSpotModal(spot) {
@@ -763,7 +874,8 @@ function openSpotModal(spot) {
   badge.textContent = spot.categoryLabel;
   title.textContent = spot.name;
   meta.innerHTML = `<span>📍 ${spot.area}</span>`;
-  desc.textContent = spot.isMap ? spot.summary : `${spot.summary} 운영시간과 연락처는 곧 업데이트됩니다.`;
+  desc.textContent = spot.isMap || spot.credit ? spot.summary : `${spot.summary} 운영시간과 연락처는 곧 업데이트됩니다.`;
+  if (spot.credit) meta.innerHTML += `<span>📷 ${spot.credit}</span>`;
   courseBox.style.display = "none";
 
   modal.classList.add("open");
